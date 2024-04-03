@@ -63,6 +63,21 @@ func (cli *ZkCli) GetConfigDetail(configId string) ([]*Prop, error) {
 	return props, nil
 }
 
+func (cli *ZkCli) DeleteConfig(configId string) error {
+	path := ConfigPath + "/" + configId
+	_, stat, err := cli.zkConn.Get(path)
+	if err != nil {
+		return err
+	}
+	err = cli.zkConn.Delete(path, stat.Version)
+	if err != nil {
+		log.Println("Delete config err", err)
+		return err
+	}
+
+	return nil
+}
+
 func (cli *ZkCli) GetServiceList() ([]string, error) {
 	path := "/services"
 	dir, _, err := cli.zkConn.Children(path)

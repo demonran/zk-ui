@@ -25,20 +25,23 @@ func Init(zkCli *zookeeper.ZkCli, r *gin.Engine) {
 func (cli *Cli) list(c *gin.Context) {
 	list, err := cli.zkCli.GetServiceList()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+		return
 	}
 	var services []*Service
 	for _, item := range list {
 		instanceList, err := cli.zkCli.GetInstanceList(item)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+			return
 		}
 		var instances []*ServiceInstance
 		for _, i := range instanceList {
 
 			data, err := cli.zkCli.GetInstanceDetail(item, i)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, err)
+				c.AbortWithStatusJSON(http.StatusInternalServerError, err)
+				return
 			}
 			var zookeeperInstance *ZookeeperInstance
 			json.Unmarshal(data, &zookeeperInstance)
