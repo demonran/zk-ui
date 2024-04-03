@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	ConfigPath  = "/config/"
+	ConfigPath  = "/config"
 	ServicePath = "/service/"
 )
 
@@ -39,7 +39,7 @@ func (cli *ZkCli) GetConfigList() ([]string, error) {
 }
 
 func (cli *ZkCli) GetConfigDetail(configId string) ([]*Prop, error) {
-	path := ConfigPath + configId
+	path := ConfigPath + "/" + configId
 	dir, _, err := cli.zkConn.Children(path)
 	if err != nil {
 		log.Println("Get config list err", err)
